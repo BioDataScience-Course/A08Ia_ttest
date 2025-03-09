@@ -31,7 +31,7 @@ Notre objectif est double. Il vise à répondre aux questions suivantes :
 
 L'indice de performance photosynthétique est obtenu par mesure de la fluorescence de la chlorophylle à l'aide d'un fluorimètre FluorPen FP100max (Photon Systems Instruments) après 15min d'adaptation à l'obscurité et par calcul à l'aide du logiciel FluorPen qui accompagne l'instrument.
 
-L'analyse des données est réalisée avec le logiciel R (`r R.version.string`) et en particulier le package {inferit} version `r packageVersion("inferit")` dans la [SciViews Box 2023](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io/) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version HTML de ce bloc-notes.
+L'analyse des données est réalisée avec le logiciel R (`r R.version.string`) et en particulier le package {inferit} version `r packageVersion("inferit")` dans la [SciViews Box 2024](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io/) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version HTML de ce bloc-notes.
 
 # Résultats
 
@@ -80,7 +80,7 @@ photo %>.%
 
 <!--% Le tableau `photo2` est mal présenté -faites un `View(photo2)`- car les mêmes individus apparaissent sur deux lignes différentes (attention : c'est une erreur fréquente que de se retrouver dans cette situation !) Remaniez le tableau de données pour obtenir `photo3` sous forme de tableau large avec une seule ligne par individu. Focalisez-vous sur la variable `pi_abs` et créez `pi_0` et `pi_60`. Affichez ensuite le contenu de `photo3` en le formatant à l'aide de `tabularise()`. -->
 
-```{r pivot1, record='RODFS', object='photo3'}
+```{r pivot1, warning=FALSE, record='RODFS', object='photo3'}
 photo2 %>.%
   spivot_wider(., names_from = ___, values_from = ___,
     id_cols = "individual") %>.%
@@ -91,16 +91,17 @@ tabularise(photo3)
 
 <!--% Réalisez le graphique le plus pertinent pour représenter les données par rapport à ce test. -->
 
-```{r plot1, record='RNP', arg='labels'}
+```{r plot1, record='RNCS'}
 chart(data = ___, ___) +
   ___(slope = 1, intercept = 0) +
   ___() +
-  labs(y = "Performance de la photosynthèse à t = 60min", x = "Performance de la photosynthèse initiale (à t = 0min)")
+  labs(y = "Performance de la photosynthèse à t = 60min",
+       x = "Performance de la photosynthèse initiale (à t = 0min)")
 ```
 
 <!-- Résumez ces données afin d'avoir un tableau `photo3_tab` qui reprenne les descripteurs statistiques importants par rapport au(x) test(s) que vous allez réaliser ensuite. Commencez par calculer `delta_pi` comme `pi_60 - pi_0` et calculez les statistiques pertinentes `mean_delta_pi`, `se_delta_pi` et `n` à partir de `delta_pi`. -->
 
-```{r tab1, record='RODFS', object='photo3_tab'}
+```{r tab1, warning=FALSE, record='RODFS', object='photo3_tab'}
 photo3 %>.%
   smutate(., delta_pi = ___) %>.%
   ssummarise(.,
@@ -175,7 +176,7 @@ select_answer(r"-{
 
 Ayant un petit nombre d'algues à disposition et n'ayant pas pu déterminer la distribution normale des indices de performance photosynthétique sur un plus grand échantillon, nous nous demandons s'il est raisonnable de considérer le normalité des données ici. Nous réalisons un second test plus en adéquation par rapport à cette observation.
 
-<!--% Remettez en doute l'hypothèse de Normalité. Quel test feriez-vous dans ce cas ? -->
+<!--% Remettez en doute l'hypothèse de normalité. Quel test feriez-vous dans ce cas ? -->
 
 ```{r test1bchoice, output='asis'}
 select_answer(r"-{
@@ -274,7 +275,7 @@ tabularise(photo4)
 
 <!--% Réalisez un graphique pertinent (boite de dispersion parallèle avec points superposés en 'jitter') par rapport à ce test pour illustrer la situation d'après l'indice de performance de la photosynthèse pi_abs. -->
 
-```{r plot2, record='RNP', arg='labels'}
+```{r plot2, record='RNCS'}
 chart(data = ___, ___) +
   ___() +
   geom_jitter(alpha = 0.3, width = 0.1) +
@@ -283,7 +284,7 @@ chart(data = ___, ___) +
 
 <!-- Calculez un tableau des descripteurs statistiques `photo4_tab` pertinents par rapport à ce test (incluez médiane, moyenne, écart type et nombre d'observations dans vos calculs). -->
 
-```{r tab2, record='RODFS', object='photo4_tab'}
+```{r tab2, warning=FALSE, record='RODFS', object='photo4_tab'}
 photo4 %>.%
   sgroup_by(., ___) %>.% 
   ssummarise(.,
@@ -503,7 +504,7 @@ Le test de puissance nous indique qu'il faudrait au moins `r ceiling(power2$n)` 
 
 -   ...
 
-<!--# Notez bien ceci : rien ne vous interdit de faire les tests paramétriques et non paramétriques (ici Student/Welch versus Wilcoxon/Mann-Whitney) dans votre bloc-notes et d'en discuter les résultats respectifs comme réalisé plus haut. Cependant, dans un rapport final ou dans une publication, vous ne présentez *jamais* les deux types de tests simultanément. Vous choisissez l'un ou l'autre en fonction de ce que vous pouvez démontrer ou non en ce qui concerne les conditions d'application et vous justifiez votre choix dans le matériel et méthodes ou dans la section des résultats. -->
+<!--# Notez bien ceci : rien ne vous interdit de faire les tests paramétriques et non paramétriques (ici Student/Welch versus Wilcoxon-Mann-Whitney) dans votre bloc-notes et d'en discuter les résultats respectifs comme réalisé plus haut. Cependant, dans un rapport final ou dans une publication, vous ne présentez *jamais* les deux types de tests simultanément. Vous choisissez l'un ou l'autre en fonction de ce que vous pouvez démontrer ou non en ce qui concerne les conditions d'application et vous justifiez votre choix dans le matériel et méthodes ou dans la section des résultats. -->
 
 # Références
 

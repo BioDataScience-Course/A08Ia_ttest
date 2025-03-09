@@ -19,15 +19,15 @@ photo$fv_fm[10] <- NA
 # Labels et unités
 photo <- labelise(
   label = list(
-    duration = "Durée",
+    duration    = "Durée",
     temperature = "Température",
-    population = "Population",
-    individual = "Individu",
-    pi_abs = "Indice de performance photosynthétique",
-    fv_fm = "Rendement quantique maximal"
+    population  = "Population",
+    individual  = "Individu",
+    pi_abs      = "Indice de performance photosynthétique",
+    fv_fm       = "Rendement quantique maximal"
   ),
   units = list(
-    duration = "min",
+    duration    = "min",
     temperature = "°C"
   )
 )
