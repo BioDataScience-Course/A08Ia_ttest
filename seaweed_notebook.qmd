@@ -31,18 +31,31 @@ Notre objectif est double. Il vise à répondre aux questions suivantes :
 
 L'indice de performance photosynthétique est obtenu par mesure de la fluorescence de la chlorophylle à l'aide d'un fluorimètre FluorPen FP100max (Photon Systems Instruments) après 15min d'adaptation à l'obscurité et par calcul à l'aide du logiciel FluorPen qui accompagne l'instrument.
 
-L'analyse des données est réalisée avec le logiciel R (`r R.version.string`) et en particulier le package {inferit} version `r packageVersion("inferit")` dans la [SciViews Box 2024](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io/) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version HTML de ce bloc-notes.
-
-# Résultats
+L'analyse des données est réalisée avec le logiciel R (`r R.version.string`) et en particulier le package {inferit} version `r packageVersion("inferit")` dans la [SciViews Box 2025](https://www.sciviews.org/software/svbox/). [Saturn Cloud](https://saturncloud.io/) (Linux Ubuntu 22.04) est utilisé pour exécuter le code et compiler la version HTML de ce bloc-notes.
 
 ```{r setup, include=FALSE}
 # Ceci est nécessaire pour les tests SDD, ne pas utiliser dans un "vrai" projet
 if (!"tools:tests" %in% search())
   source(here::here("tests/tools_tests.R"), attach(NULL, name = "tools:tests"))
 
+# Configure Knitr pour utiliser AGG comme périphérique graphique
+knitr::opts_chunk$set(dev = "ragg_png")
+
 # Configuration de l'environnement SciViews::R
-SciViews::R(___, lang = "fr")
+SciViews::R("___", lang = "fr")
 ```
+
+<!--% Spécifier si vous avez employé l'intelligence artificielle dans votre projet. -->
+
+```{r ai_comment, output='asis'}
+select_answer(r"-{
+[] -   Ce document a été rédigé en étant assisté par l'Intelligence Artificielle.
+[] -   Ce document a été rédigé sans recours à l'Intelligence Artificielle.}-")
+```
+
+<!-- Précisez ci-dessous l'utilisation que vous avez faite de l'IA. Citez le modèle utilisé. -->
+
+# Résultats
 
 ## Description des données
 
@@ -72,24 +85,23 @@ Nous analysons ici l'indice de performance photosynthétique pour les algues iss
 <!--% Sélectionnez les individus issus du Svalbard et soumis à une eau de 20°C au temps 0 et après 60 minutes. -->
 
 ```{r select1, record='RODFS', object='photo2'}
-photo %>.%
-  sfilter(., ___ & (___ | ___) &
-    ___) ->
-  photo2
+photo2 <- filter_(photo, ___ & (___ | ___) &
+    ___)
 ```
 
-<!--% Le tableau `photo2` est mal présenté -faites un `View(photo2)`- car les mêmes individus apparaissent sur deux lignes différentes (attention : c'est une erreur fréquente que de se retrouver dans cette situation !) Remaniez le tableau de données pour obtenir `photo3` sous forme de tableau large avec une seule ligne par individu. Focalisez-vous sur la variable `pi_abs` et créez `pi_0` et `pi_60`. Affichez ensuite le contenu de `photo3` en le formatant à l'aide de `tabularise()`. -->
+<!--% Le tableau `photo2` est mal présenté. Faites un `View(photo2)` pour observer que les mêmes individus apparaissent sur deux lignes différentes (attention : c'est une erreur fréquente que de se retrouver dans cette situation !). Remaniez le tableau de données pour obtenir `photo3` sous forme de tableau large avec une seule ligne par individu. Focalisez-vous sur la variable `pi_abs` et créez `pi_0` et `pi_60`. Le nouveau tableau doit avoir 3 colonnes : individu, pi_0, pi_60. Affichez ensuite le contenu de `photo3` en le formatant à l'aide de `tabularise()`. -->
 
 ```{r pivot1, warning=FALSE, record='RODFS', object='photo3'}
 photo2 %>.%
-  spivot_wider(., names_from = ___, values_from = ___,
+  pivot_wider_(., names_from = ___, values_from = ___,
     id_cols = "individual") %>.%
-  srename(., individu = ___, pi_0 = ___, pi_60 = ___) ->
+  rename_(., ___ = ___, ___ = ___, ___ = ___) ->
   photo3
+# tableau formaté
 tabularise(photo3)
 ```
 
-<!--% Réalisez le graphique le plus pertinent pour représenter les données par rapport à ce test. -->
+<!--% Réalisez le graphique le plus pertinent pour représenter les données par rapport au test statistique à réaliser. -->
 
 ```{r plot1, record='RNCS'}
 chart(data = ___, ___) +
@@ -99,12 +111,12 @@ chart(data = ___, ___) +
        x = "Performance de la photosynthèse initiale (à t = 0min)")
 ```
 
-<!-- Résumez ces données afin d'avoir un tableau `photo3_tab` qui reprenne les descripteurs statistiques importants par rapport au(x) test(s) que vous allez réaliser ensuite. Commencez par calculer `delta_pi` comme `pi_60 - pi_0` et calculez les statistiques pertinentes `mean_delta_pi`, `se_delta_pi` et `n` à partir de `delta_pi`. -->
+<!-- Résumez ces données afin d'avoir un tableau `photo3_tab` qui reprend les descripteurs statistiques importants par rapport au(x) test(s) que vous allez réaliser ensuite. Commencez par calculer `delta_pi` comme `pi_60 - pi_0` et calculez les statistiques pertinentes `mean_delta_pi`, `se_delta_pi` et `n` à partir de `delta_pi`. -->
 
 ```{r tab1, warning=FALSE, record='RODFS', object='photo3_tab'}
 photo3 %>.%
-  smutate(., delta_pi = ___) %>.%
-  ssummarise(.,
+  mutate_(., delta_pi = ___) %>.%
+  summarise_(.,
     `moyenne delta_pi` = ___,
     `se delta_pi`      = ___,
     `n`                = ___) ->
@@ -267,9 +279,7 @@ Existe-t-il une différence dans la réponse de l'algue *Fucus distichus* entre 
 <!--% Sélectionnez tous les individus étudiés dans une eau à 20°C après 60 minutes dans `photo4`. Affichez ensuite le contenu du tableau `photo4` dans votre rapport en le formatant à l'aide de `tabularise()`. -->
 
 ```{r select2, record='RODFS', object='photo4'}
-photo %>.%
-  sfilter(., ___, ___) ->
-  photo4
+photo4 <- filter_(photo, ___, ___) 
 tabularise(photo4)
 ```
 
@@ -286,8 +296,8 @@ chart(data = ___, ___) +
 
 ```{r tab2, warning=FALSE, record='RODFS', object='photo4_tab'}
 photo4 %>.%
-  sgroup_by(., ___) %>.% 
-  ssummarise(.,
+  group_by_(., ___) %>.% 
+  summarise_(.,
     `moyenne pi_abs`    = ___,
     `médiane pi_abs`    = ___,
     `écart type pi_abs` = ___,
@@ -478,7 +488,7 @@ Si nous pouvions recommencer l'expérience, quelle taille d'échantillon nous fa
 
 <!--% Terminez votre analyse en déterminant la taille de l'échantillon requise pour montrer éventuellement une différence significative au seuil alpha de 5% dans le cas du test de Welch appliqué à la différence entre Kirkenes et Svalbard tout en ayant une puissance du test d'au moins 80%. Pour ce faire, vous devez calculer la taille de l'effet observé selon Cohen qui correspond à la différence des moyennes divisée par la racine carré de la somme des variances dans ce cas (il est calculé pour vous ci-dessous). -->
 
-```{r power2, record='ROP', object='power2', arg='method,alternative,n'}
+```{r power2, warning=FALSE, record='ROP', object='power2', arg='method,alternative,n'}
 # Calcul de l'effet observé (d de Cohen)
 (cohen_d <- (photo4_tab$`moyenne pi_abs`[1] -
     photo4_tab$`moyenne pi_ab`[2]) /
@@ -494,17 +504,29 @@ Le test de puissance nous indique qu'il faudrait au moins `r ceiling(power2$n)` 
 
 # Discussion et conclusions
 
-<!--% Discutez les résultats obtenus en 4 à 6 points ci-dessous. -->
+```{r conclu_comment, output='asis'}
+select_answer(r"-{
+[] -  Les comparaisons entre les tests paramétriques et non paramétriques doivent toujours être réalisé dans un carnet de notes. 
+[] -  Les comparaisons entre les tests paramétriques et non paramétriques peuventt être être réalisé dans un carnet de notes.
+[] -  Les comparaisons entre les tests paramétriques et non paramétriques sont totalement inutiles dans un carnet de notes. Il faut choisir le 'bon' test grâce aux conditions d'application et l'employer.
 
--   ...
+[] -  Les comparaisons entre les tests paramétriques et non paramétriques doivent toujours être réalisé dans un rapport final. 
+[] -  Les comparaisons entre les tests paramétriques et non paramétriques peuventt être être réalisé dans un rapport final.
+[] -  Les comparaisons entre les tests paramétriques et non paramétriques sont totalement inutiles dans un rapport final. Il faut choisir le 'bon' test grâce aux conditions d'application et l'employer.
 
--   ...
+[] -  Pour Svalbard à 20°C (60 min), en l'absence de preuve de normalité et vu la petite taille d'échantillon, il est raisonnable de privilégier l'approche non paramétrique ou d'augmenter n.
+[] -  Pour Svalbard à 20°C (60 min), en l'absence de preuve de normalité et vu la petite taille d'échantillon, il est raisonnable de privilégier l'approche  paramétrique et d'augmenter n.
 
--   ...
+[] - L'algue *Fucus distichus* issue de Svalbard voit sont indice de performance photosynthétique significativement diminué au seuil $\alpha$ de 5% après une exposition de 60min à 20°C.
+[] - L'algue *Fucus distichus* issue de Svalbard voit sont indice de performance photosynthétique significativement augmenté au seuil $\alpha$ de 5% après une exposition de 60min à 20°C.
+[] - L'algue *Fucus distichus* issue de Svalbard voit sont indice de performance photosynthétique rester significativement stable au seuil $\alpha$ de 5% après une exposition de 60min à 20°C.
 
--   ...
+[] -  À 60 min et 20°C, aucune différence significative n'est détectée entre Svalbard et Kirkenes; les tests de Welch et de Wilcoxon convergent.
+[] -  À 60 min et 20°C, une large différence significative est détectée entre Svalbard et Kirkenes; les tests de Welch et de Wilcoxon convergent.
 
-<!--# Notez bien ceci : rien ne vous interdit de faire les tests paramétriques et non paramétriques (ici Student/Welch versus Wilcoxon-Mann-Whitney) dans votre bloc-notes et d'en discuter les résultats respectifs comme réalisé plus haut. Cependant, dans un rapport final ou dans une publication, vous ne présentez *jamais* les deux types de tests simultanément. Vous choisissez l'un ou l'autre en fonction de ce que vous pouvez démontrer ou non en ce qui concerne les conditions d'application et vous justifiez votre choix dans le matériel et méthodes ou dans la section des résultats. -->
+[] -  La puissance statistique paraît limitée pour la comparaison des deux stations. Il faudrait davantage d'algues par site pour conclure de manière robuste (p.ex. puissance ≥ 80%).
+[] -  La puissance statistique est excellente pour la comparaison des deux stations. Le nombre d'algues par site est suffisant.}-")
+```
 
 # Références
 

@@ -35,12 +35,12 @@ test_that("La structure du document seaweed_notebook est-elle conservée ?", {
   # d'origine dans le dépôt "template" du document (lien au début du fichier
   # README.md).
 
-  expect_true(all(c("setup", "import", "desccomment", "select1", "pivot1",
-    "plot1", "tab1", "test1achoice", "test1ahypo", "test1a", "test1acomment",
-    "test1bchoice", "test1bhypo", "test1b", "test1bcomment", "test1abcomment",
-    "select2", "plot2", "tab2", "test2achoice", "test2ahypo", "test2a",
-    "test2acomment", "test2bchoice", "test2bhypo", "test2b", "test2bcomment",
-    "test2abcomment", "power2")
+  expect_true(all(c("setup", "ai_comment", "import", "desccomment", "select1",
+    "pivot1", "plot1", "tab1", "test1achoice", "test1ahypo", "test1a",
+    "test1acomment", "test1bchoice", "test1bhypo", "test1b", "test1bcomment",
+    "test1abcomment", "select2", "plot2", "tab2", "test2achoice", "test2ahypo",
+    "test2a", "test2acomment", "test2bchoice", "test2bhypo", "test2b",
+    "test2bcomment", "test2abcomment", "power2", "conclu_comment")
     %in% rmd_node_label(seaweed)))
   # Un ou plusieurs labels de chunks nécessaires à l'évaluation manquent dans
   # seaweed_notebook.qmd
@@ -336,11 +336,13 @@ test_that("Chunk 'test2abcomment' : Comparaison des tests 2a et 2b", {
 })
 
 
-test_that("La partie discussion et conclusions est-elle remplie ?", {
-  expect_true(!(rmd_select(seaweed, by_section("Discussion et conclusions")) |>
-      as_document() |> grepl("- +\\.\\.\\.", x = _) |> any()))
-  # La discussion et les conclusions ne sont pas faites
-  # Remplacez les items "- " par vos phrases de commentaires
-  # libres (à noter que le contenu de cette section n'est pas évalué
-  # automatiquement, mais il le sera par vos enseignants).
+test_that("Chunk 'conclu_comment' : discussion et conclusions", {
+  expect_true(is_identical_to_ref("conclu_comment"))
+  # L'interprétation de 'conclu_comment' est (partiellement) fausse.
+  # Vous devez cochez les phrases qui décrivent les graphiques et la table d'un
+  # 'x' entre les crochets [] -> [x]. Ensuite, vous devez recompiler la version
+  # HTML du bloc-notes (bouton 'Rendu') sans erreur pour réactualiser les
+  # résultats.
+  # Assurez-vous de bien comprendre ce qui est coché ou pas : vous n'aurez plus
+  # cette aide plus tard dans le travail de groupe ou les interrogations !
 })
